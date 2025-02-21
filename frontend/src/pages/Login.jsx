@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
-import { login } from "../api";
+import { login } from "../api"; // Ensure this function is correctly imported
 import "../styles/auth.css";
 
 const Login = () => {
@@ -11,11 +11,12 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await login(form);
-      localStorage.setItem("token", data.token);
-      navigate("/home");
+      const response = await login(form);
+      alert("Login successful!");
+      console.log(response); // Check what response you get
+      navigate("/home"); // Redirect to homepage
     } catch (error) {
-      alert("Invalid credentials");
+      alert("Invalid credentials. Try again.");
     }
   };
 
@@ -28,6 +29,7 @@ const Login = () => {
             type="email"
             placeholder="Email"
             className="auth-input"
+            value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             required
           />
@@ -35,6 +37,7 @@ const Login = () => {
             type="password"
             placeholder="Password"
             className="auth-input"
+            value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
             required
           />

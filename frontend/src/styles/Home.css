@@ -1,0 +1,65 @@
+/* Background */
+.homepage {
+    background: url("https://i.imgur.com/9YQhIvM.jpg") no-repeat center center/cover;
+    min-height: 100vh;
+    padding-bottom: 20px;
+  }
+  
+  /* Navbar */
+  .logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: yellow;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+  }
+  
+  .profile-pic {
+    width: 40px;
+    height: 40px;
+    margin-left: 15px;
+  }
+  
+  /* Confession Cards */
+  .confession-card {
+    background: #fff;
+    border-radius: 15px;
+    padding: 15px;
+    margin: 15px 0;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+  }
+  
+  .avatar {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .username {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .confession-text {
+    font-size: 1rem;
+    margin-top: 5px;
+  }
+  
+  /* Icons */
+  .icons {
+    position: absolute;
+    right: 15px;
+    bottom: 10px;
+  }
+  
+  .icon-btn {
+    font-size: 1.2rem;
+    color: #ff4757;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+  
+  .icon-btn:hover {
+    transform: scale(1.2);
+  }
+  
