@@ -12,7 +12,7 @@ const Signup = () => {
     e.preventDefault();
     try {
       await signup(form);
-      alert("Signup successful! Please login.");
+      alert("Signup successful !!");
       navigate("/home");
     } catch (error) {
       alert("Signup failed. Try again.");

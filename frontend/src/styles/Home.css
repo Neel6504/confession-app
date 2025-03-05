@@ -1,65 +1,66 @@
-/* Background */
-.homepage {
-    background: url("https://i.imgur.com/9YQhIvM.jpg") no-repeat center center/cover;
-    min-height: 100vh;
-    padding-bottom: 20px;
-  }
-  
-  /* Navbar */
-  .logo {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: yellow;
-    font-family: "Comic Sans MS", cursive, sans-serif;
-  }
-  
-  .profile-pic {
-    width: 40px;
-    height: 40px;
-    margin-left: 15px;
-  }
-  
-  /* Confession Cards */
-  .confession-card {
-    background: #fff;
-    border-radius: 15px;
-    padding: 15px;
-    margin: 15px 0;
-    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
-    position: relative;
-  }
-  
-  .avatar {
-    width: 50px;
-    height: 50px;
-  }
-  
-  .username {
-    font-size: 1.2rem;
-    font-weight: bold;
-  }
-  
-  .confession-text {
-    font-size: 1rem;
-    margin-top: 5px;
-  }
-  
-  /* Icons */
-  .icons {
-    position: absolute;
-    right: 15px;
-    bottom: 10px;
-  }
-  
-  .icon-btn {
-    font-size: 1.2rem;
-    color: #ff4757;
-    border: none;
-    background: none;
-    cursor: pointer;
-  }
-  
-  .icon-btn:hover {
-    transform: scale(1.2);
-  }
-  
+/* Home.css */
+.home-container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
+
+.home-title {
+  text-align: center;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.no-confession {
+  text-align: center;
+  color: #ccc;
+}
+
+.confession-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.confession-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.confession-text {
+  font-size: 16px;
+  font-style: italic;
+  margin: 10px 0;
+}
+
+.confession-actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 15px;
+}
+
+.like-button,
+.superlike-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  transition: transform 0.2s;
+}
+
+.like-button:hover,
+.superlike-button:hover {
+  transform: scale(1.1);
+}

@@ -1,65 +1,74 @@
-import React from "react";
-import { Container, Row, Col, Card, Button, Navbar, Nav, Image } from "react-bootstrap";
-import "../styles/Home.css"; // Corrected path for Home.css
+import axios from "axios";
+import { useEffect, useState } from "react";
+import "../styles/Home.css"; // Adjusted path to styles folder
+
 
 const Home = () => {
-  const confessions = [
-    {
-      username: "mysteriourme",
-      confession: "I always say 'on my way' when I'm still getting dressed.",
-      avatar: "https://i.pravatar.cc/50?img=1",
-    },
-    {
-      username: "truesoul1602",
-      confession: "Sometimes I fake bad internet on Zoom just to leave a meeting.",
-      avatar: "https://i.pravatar.cc/50?img=2",
-    },
-    {
-      username: "Fightergirlme",
-      confession: "My reflection blinked at me—when I didn’t.",
-      avatar: "https://i.pravatar.cc/50?img=3",
-    },
-  ];
+  const [confessions, setConfessions] = useState([]);
+
+  useEffect(() => {
+    const fetchConfessions = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/confessions/all");
+        setConfessions(response.data);
+      } catch (error) {
+        console.error("Error fetching confessions:", error);
+      }
+    };
+
+    fetchConfessions();
+  }, []);
+
+  const handleLike = async (id) => {
+    try {
+      await axios.put(`http://localhost:5000/api/confessions/like/${id}`);
+      setConfessions((prev) =>
+        prev.map((confession) =>
+          confession._id === id ? { ...confession, likes: confession.likes + 1 } : confession
+        )
+      );
+    } catch (error) {
+      console.error("Error liking confession:", error);
+    }
+  };
+
+  const handleSuperLike = async (id) => {
+    try {
+      await axios.put(`http://localhost:5000/api/confessions/superlike/${id}`);
+      setConfessions((prev) =>
+        prev.map((confession) =>
+          confession._id === id ? { ...confession, superLikes: confession.superLikes + 1 } : confession
+        )
+      );
+    } catch (error) {
+      console.error("Error super-liking confession:", error);
+    }
+  };
 
   return (
-    <div className="homepage">
-      {/* Navbar */}
-      <Navbar bg="dark" variant="dark" expand="lg" className="px-4">
-        <Navbar.Brand href="#" className="logo">Inchogchat</Navbar.Brand>
-        <Nav className="ml-auto">
-          <Nav.Link href="#">Chat</Nav.Link>
-          <Nav.Link href="#">Confess</Nav.Link>
-          <Nav.Link href="#">About us</Nav.Link>
-          <Image src="https://i.pravatar.cc/40" roundedCircle className="profile-pic" />
-        </Nav>
-      </Navbar>
-
-      {/* Confessions Section */}
-      <Container className="mt-4">
-        {confessions.map((confession, index) => (
-          <Row key={index} className="justify-content-center">
-            <Col md={8}>
-              <Card className="confession-card">
-                <Card.Body>
-                  <Row>
-                    <Col xs={2}>
-                      <Image src={confession.avatar} roundedCircle className="avatar" />
-                    </Col>
-                    <Col xs={10}>
-                      <h5 className="username">{confession.username}</h5>
-                      <p className="confession-text">"{confession.confession}"</p>
-                    </Col>
-                  </Row>
-                  <div className="icons">
-                    <Button variant="link" className="icon-btn">💬</Button>
-                    <Button variant="link" className="icon-btn">❤️</Button>
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        ))}
-      </Container>
+    <div className="home-container">
+      <h1 className="home-title">All Confessions</h1>
+      {confessions.length === 0 ? (
+        <p className="no-confession">No confessions yet.</p>
+      ) : (
+        confessions.map((confession) => (
+          <div key={confession._id} className="confession-card">
+            <div className="confession-header">
+              <img src="/avatar.png" alt="User Avatar" className="user-avatar" />
+              <span className="username">{confession.userId}</span>
+            </div>
+            <p className="confession-text">{confession.confessionText}</p>
+            <div className="confession-actions">
+              <button className="like-button" onClick={() => handleLike(confession._id)}>
+                ❤️ {confession.likes}
+              </button>
+              <button className="superlike-button" onClick={() => handleSuperLike(confession._id)}>
+                💬 {confession.superLikes}
+              </button>
+            </div>
+          </div>
+        ))
+      )}
     </div>
   );
 };
