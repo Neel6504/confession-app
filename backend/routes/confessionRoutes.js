@@ -37,32 +37,32 @@ router.post("/add", async (req, res) => {
 });
 
 // ✅ Like a confession
-router.put("/like/:id", async (req, res) => {
-  try {
-    const confession = await Confession.findById(req.params.id);
-    if (!confession) return res.status(404).json({ message: "Confession not found" });
+// router.put("/like/:id", async (req, res) => {
+//   try {
+//     const confession = await Confession.findById(req.params.id);
+//     if (!confession) return res.status(404).json({ message: "Confession not found" });
 
-    confession.likes = (confession.likes || 0) + 1;
-    await confession.save();
-    res.status(200).json({ message: "Confession liked", likes: confession.likes });
-  } catch (error) {
-    res.status(500).json({ message: "Error liking confession", error: error.message });
-  }
-});
+//     confession.likes = (confession.likes || 0) + 1;
+//     await confession.save();
+//     res.status(200).json({ message: "Confession liked", likes: confession.likes });
+//   } catch (error) {
+//     res.status(500).json({ message: "Error liking confession", error: error.message });
+//   }
+// });
 
 // ✅ Super-like a confession
-router.put("/superlike/:id", async (req, res) => {
-  try {
-    const confession = await Confession.findById(req.params.id);
-    if (!confession) return res.status(404).json({ message: "Confession not found" });
+// router.put("/superlike/:id", async (req, res) => {
+//   try {
+//     const confession = await Confession.findById(req.params.id);
+//     if (!confession) return res.status(404).json({ message: "Confession not found" });
 
-    confession.superLikes = (confession.superLikes || 0) + 1;
-    await confession.save();
-    res.status(200).json({ message: "Confession super-liked", superLikes: confession.superLikes });
-  } catch (error) {
-    res.status(500).json({ message: "Error super-liking confession", error: error.message });
-  }
-});
+//     confession.superLikes = (confession.superLikes || 0) + 1;
+//     await confession.save();
+//     res.status(200).json({ message: "Confession super-liked", superLikes: confession.superLikes });
+//   } catch (error) {
+//     res.status(500).json({ message: "Error super-liking confession", error: error.message });
+//   }
+// });
 
 router.get("/user/:userId", async (req, res) => {
   try {
@@ -82,6 +82,69 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ message: "Error deleting confession" });
   }
 });
+
+// ✅ Like/Unlike Confession
+router.post("/:id/like", async (req, res) => {
+  const { userId } = req.body; // Ensure userId is sent in request
+
+  try {
+      const confession = await Confession.findById(req.params.id);
+      if (!confession) {
+          return res.status(404).json({ message: "Confession not found" });
+      }
+
+      // Check if user has already liked
+      if (confession.likedBy.includes(userId)) {
+          // If already liked, remove like (toggle feature)
+          confession.likedBy = confession.likedBy.filter((id) => id !== userId);
+          confession.likes -= 1;
+      } else {
+          // Otherwise, add the like
+          confession.likedBy.push(userId);
+          confession.likes += 1;
+      }
+
+      await confession.save();
+      return res.json({ message: "Like updated!", likes: confession.likes });
+  } catch (error) {
+      console.error("Error liking:", error);
+      return res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+
+
+// ✅ Super-Like/Un-Super-Like Confession
+router.post("/:id/superlike", async (req, res) => {
+  const { userId } = req.body; // Ensure userId is sent in request
+
+  try {
+      const confession = await Confession.findById(req.params.id);
+      if (!confession) {
+          return res.status(404).json({ message: "Confession not found" });
+      }
+
+      // Check if user has already superliked
+      if (confession.superLikedBy.includes(userId)) {
+          // If already superliked, remove superLike (toggle feature)
+          confession.superLikedBy = confession.superLikedBy.filter((id) => id !== userId);
+          confession.superLikes -= 1;
+      } else {
+          // Otherwise, add the superLike
+          confession.superLikedBy.push(userId);
+          confession.superLikes += 1;
+      }
+
+      await confession.save();
+      return res.json({ message: "Superlike updated!", superLikes: confession.superLikes });
+  } catch (error) {
+      console.error("Error super-liking:", error);
+      return res.status(500).json({ message: "Server error" });
+  }
+});
+
+
 
 
 

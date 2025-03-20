@@ -10,9 +10,6 @@ const Navbar = () => {
         </Link>
         <ul className="nav-links">
           <li>
-            <Link to="/chat">Chat</Link>
-          </li>
-          <li>
             <Link to="/confess">Confess</Link>
           </li>
           <li>

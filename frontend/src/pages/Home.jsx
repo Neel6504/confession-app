@@ -19,31 +19,74 @@ const Home = () => {
     fetchConfessions();
   }, []);
 
-  const handleLike = async (id) => {
+  const handleLike = async (confessionId) => {
     try {
-      await axios.put(`http://localhost:5000/api/confessions/like/${id}`);
-      setConfessions((prev) =>
-        prev.map((confession) =>
-          confession._id === id ? { ...confession, likes: confession.likes + 1 } : confession
-        )
-      );
-    } catch (error) {
-      console.error("Error liking confession:", error);
-    }
-  };
+        const loggedInUserId = localStorage.getItem("userId"); // Fetch from localStorage or state
+        if (!loggedInUserId) {
+            console.error("User ID not found");
+            return;
+        }
 
-  const handleSuperLike = async (id) => {
-    try {
-      await axios.put(`http://localhost:5000/api/confessions/superlike/${id}`);
-      setConfessions((prev) =>
-        prev.map((confession) =>
-          confession._id === id ? { ...confession, superLikes: confession.superLikes + 1 } : confession
-        )
-      );
+        const response = await fetch(`http://localhost:5000/api/confessions/${confessionId}/like`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId: loggedInUserId }),
+        });
+
+        const data = await response.json();
+        console.log("Like Response:", data);
+
+        if (response.ok) {
+            setConfessions((prevConfessions) =>
+                prevConfessions.map((conf) =>
+                    conf._id === confessionId ? { ...conf, likes: data.likes } : conf
+                )
+            );
+        } else {
+            console.error("Error liking confession:", data.message);
+        }
     } catch (error) {
-      console.error("Error super-liking confession:", error);
+        console.error("Error liking confession:", error);
     }
-  };
+};
+
+
+
+
+
+  const handleSuperLike = async (confessionId) => {
+    const loggedInUserId = localStorage.getItem("userId"); // ✅ Get userId
+
+    if (!loggedInUserId) {
+        console.error("User ID not found. Please log in.");
+        return;
+    }
+
+    try {
+        const response = await axios.post(
+            `http://localhost:5000/api/confessions/${confessionId}/superlike`,
+            { userId: loggedInUserId } // ✅ Send userId
+        );
+
+        console.log("Superlike updated:", response.data);
+
+        // ✅ Update state to reflect new superLikes count
+        setConfessions((prevConfessions) =>
+            prevConfessions.map((confession) =>
+                confession._id === confessionId
+                    ? { ...confession, superLikes: response.data.superLikes }
+                    : confession
+            )
+        );
+    } catch (error) {
+        console.error("Error super-liking confession:", error);
+    }
+};
+
+
+
+
+
 
   // ✅ Function to get avatar based on gender
   const getAvatar = (gender) => {

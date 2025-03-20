@@ -21,6 +21,25 @@ const Login = () => {
       alert("Invalid credentials. Try again.");
     }
   };
+
+  const handleLogin = async () => {
+    try {
+        const response = await axios.post("http://localhost:5000/api/auth/login", {
+            email,
+            password,
+        });
+
+        console.log("Login successful:", response.data);
+
+        // ✅ Store userId in localStorage
+        localStorage.setItem("userId", response.data.userId);
+
+        navigate("/home");
+    } catch (error) {
+        console.error("Login failed:", error);
+    }
+};
+
   
   return (
     <div className="auth-container">
