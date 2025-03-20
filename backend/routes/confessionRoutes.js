@@ -5,10 +5,11 @@ const Confession = require("../models/Confession");
 // ✅ Get all confessions
 router.get("/all", async (req, res) => {
   try {
-    const confessions = await Confession.find().sort({ createdAt: -1 });
-    res.status(200).json(confessions);
+    const confessions = await Confession.find().populate("userId", "userId gender");
+    console.log("Confessions with populated user:", JSON.stringify(confessions, null, 2));
+    res.json(confessions);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching confessions", error: error.message });
+    res.status(500).json({ error: "Error fetching confessions" });
   }
 });
 
@@ -63,16 +64,25 @@ router.put("/superlike/:id", async (req, res) => {
   }
 });
 
-// ✅ Delete a confession
-router.delete("/delete/:id", async (req, res) => {
+router.get("/user/:userId", async (req, res) => {
   try {
-    const deletedConfession = await Confession.findByIdAndDelete(req.params.id);
-    if (!deletedConfession) return res.status(404).json({ message: "Confession not found" });
-
-    res.status(200).json({ message: "Confession deleted successfully" });
+    const confessions = await Confession.find({ userId: req.params.userId });
+    res.json(confessions);
   } catch (error) {
-    res.status(500).json({ message: "Error deleting confession", error: error.message });
+    res.status(500).json({ message: "Error fetching confessions" });
   }
 });
+
+// ✅ Delete a confession by its ID
+router.delete("/:id", async (req, res) => {
+  try {
+    await Confession.findByIdAndDelete(req.params.id);
+    res.json({ message: "Confession deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting confession" });
+  }
+});
+
+
 
 module.exports = router;

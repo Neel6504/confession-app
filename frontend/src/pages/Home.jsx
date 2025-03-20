@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import "../styles/Home.css"; // Adjusted path to styles folder
-
+import "../styles/Home.css"; // Ensure this path is correct
+import Navbar from "./Navbar";
 
 const Home = () => {
   const [confessions, setConfessions] = useState([]);
@@ -45,31 +45,54 @@ const Home = () => {
     }
   };
 
+  // ✅ Function to get avatar based on gender
+  const getAvatar = (gender) => {
+    console.log("Gender received:", gender); // Debugging gender data
+
+    if (!gender) return "https://cdn-icons-png.flaticon.com/512/2922/2922688.png"; // Default avatar
+    const lowerGender = gender.toLowerCase().trim(); // Normalize input
+
+    if (lowerGender === "male") return "https://cdn-icons-png.flaticon.com/512/2922/2922510.png";
+    if (lowerGender === "female") return "https://cdn-icons-png.flaticon.com/512/2922/2922561.png";
+    
+    return "https://cdn-icons-png.flaticon.com/512/2922/2922688.png"; // Default avatar
+  };
+
   return (
-    <div className="home-container">
-      <h1 className="home-title">All Confessions</h1>
-      {confessions.length === 0 ? (
-        <p className="no-confession">No confessions yet.</p>
-      ) : (
-        confessions.map((confession) => (
-          <div key={confession._id} className="confession-card">
-            <div className="confession-header">
-              <img src="/avatar.png" alt="User Avatar" className="user-avatar" />
-              <span className="username">{confession.userId}</span>
-            </div>
-            <p className="confession-text">{confession.confessionText}</p>
-            <div className="confession-actions">
-              <button className="like-button" onClick={() => handleLike(confession._id)}>
-                ❤️ {confession.likes}
-              </button>
-              <button className="superlike-button" onClick={() => handleSuperLike(confession._id)}>
-                💬 {confession.superLikes}
-              </button>
-            </div>
-          </div>
-        ))
-      )}
-    </div>
+    <>
+      <Navbar />
+      <div className="home-container">
+        {confessions.length === 0 ? (
+          <p className="no-confession">No confessions yet.</p>
+        ) : (
+          confessions.map((confession) => {
+            console.log("User Data:", confession.userId); // Debugging user data
+            console.log("Gender for user:", confession.userId?.gender); // Checking gender value
+            return (
+              <div key={confession._id} className="confession-card">
+                <div className="confession-header">
+                  <img 
+                    src={getAvatar(confession.userId?.gender)} 
+                    alt="User Avatar" 
+                    className="user-avatar" 
+                  />
+                 <span className="username">{confession.userId}</span>
+                </div>
+                <p className="confession-text">{confession.confessionText}</p>
+                <div className="confession-actions">
+                  <button className="like-button" onClick={() => handleLike(confession._id)}>
+                    ❤️ {confession.likes}
+                  </button>
+                  <button className="superlike-button" onClick={() => handleSuperLike(confession._id)}>
+                   🔥 {confession.superLikes}
+                  </button>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+    </>
   );
 };
 

@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 
-router.post("/", async (req, res) => {  // ✅ Fix: Use "/" instead of "/signup"
-  const { name, email, password } = req.body;
+router.post("/", async (req, res) => {
+  const { name, email, password, gender } = req.body;  // ✅ Include gender
 
   try {
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !gender) {  // ✅ Ensure gender is provided
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -18,7 +18,7 @@ router.post("/", async (req, res) => {  // ✅ Fix: Use "/" instead of "/signup"
     const randomNum = Math.floor(10000 + Math.random() * 90000);
     const userId = `user_${randomNum}`;
 
-    const newUser = new User({ name, email: email.toLowerCase(), password, userId });
+    const newUser = new User({ name, email: email.toLowerCase(), password, userId, gender });
 
     await newUser.save();
 

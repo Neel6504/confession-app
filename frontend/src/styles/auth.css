@@ -62,3 +62,18 @@
     color: #000;
   }
   
+  .gender-container {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    margin-left: 70px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+    gap: 10px; /* Adjust spacing between label and buttons */
+  }
+  
+  .gender-options {
+    display: flex;
+    gap: 15px; /* Adjust spacing between Male & Female options */
+  }
+  

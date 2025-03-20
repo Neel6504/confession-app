@@ -1,36 +1,55 @@
-import React, { useEffect, useState } from "react";
-import { getUserConfessions, deleteConfession } from "../api";
-import "../styles/Home.css";
+import { useState, useEffect } from "react";
+import ConfessionCard from "../components/ConfessionCard"; // Import the component
 
 const Profile = () => {
-    const [confessions, setConfessions] = useState([]);
+  const [confessions, setConfessions] = useState([]);
+  const userId = localStorage.getItem("userId");
 
-    useEffect(() => {
-        fetchUserConfessions();
-    }, []);
+  useEffect(() => {
+    if (!userId) {
+      console.error("❌ No userId found!");
+      return;
+    }
 
-    const fetchUserConfessions = async () => {
-        const { data } = await getUserConfessions();
+    fetch(`http://localhost:5000/api/confessions/user/${userId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("🔹 Fetched Confessions:", data);
         setConfessions(data);
-    };
+      })
+      .catch((error) => console.error("❌ Error fetching confessions:", error));
+  }, [userId]);
 
-    const handleDelete = async (id) => {
-        await deleteConfession(id);
-        fetchUserConfessions();
-    };
+  const handleDelete = async (confessionId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/confessions/${confessionId}`, {
+        method: "DELETE",
+      });
 
-    return (
-        <div className="container">
-            {confessions.map((confession) => (
-                <div key={confession._id} className="confession">
-                    <div className="confession-text">"{confession.text}"</div>
-                    <div className="confession-actions">
-                        <button className="btn btn-danger" onClick={() => handleDelete(confession._id)}>Delete</button>
-                    </div>
-                </div>
-            ))}
+      if (response.ok) {
+        setConfessions(confessions.filter((confession) => confession._id !== confessionId));
+      } else {
+        console.error("❌ Failed to delete confession");
+      }
+    } catch (error) {
+      console.error("❌ Error deleting confession:", error);
+    }
+  };
+
+  return (
+    <div>
+      <h2>My Confessions</h2>
+      {confessions.length > 0 ? (
+        <div className="confession-container">
+          {confessions.map((confession) => (
+            <ConfessionCard key={confession._id} confession={confession} onDelete={handleDelete} />
+          ))}
         </div>
-    );
+      ) : (
+        <p>No confessions found.</p>
+      )}
+    </div>
+  );
 };
 
 export default Profile;

@@ -5,7 +5,7 @@ import { signup } from "../api";
 import "../styles/auth.css";
 
 const Signup = () => {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", gender: "" });
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -45,6 +45,32 @@ const Signup = () => {
             onChange={(e) => setForm({ ...form, password: e.target.value })}
             required
           />
+
+          {/* ✅ Add Gender Selection */}
+          {/* ✅ Gender Selection */}
+          <div className="gender-container">
+            <label className="text-white">Gender: </label>
+            <div className="gender-options">
+              <Form.Check
+                type="radio"
+                label="Male"
+                name="gender"
+                value="Male"
+                onChange={(e) => setForm({ ...form, gender: e.target.value })}
+                required
+              />
+              <Form.Check
+                type="radio"
+                label="Female"
+                name="gender"
+                value="Female"
+                onChange={(e) => setForm({ ...form, gender: e.target.value })}
+                required
+              />
+            </div>
+          </div>
+
+
           <Button type="submit" className="auth-button">
             Signup
           </Button>
