@@ -6,7 +6,7 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="logo">
-          Inchogchat
+          Incogchat
         </Link>
         <ul className="nav-links">
           <li>

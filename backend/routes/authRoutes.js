@@ -28,26 +28,19 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/user/:userId", async (req, res) => {
+router.get("/user/:userId", authenticateUser, async (req, res) => {
   try {
-    const userId = req.params.userId;
+      // Ensure the requested userId matches the logged-in user's ID
+      if (req.params.userId !== req.user.userId) {
+          return res.status(403).json({ message: "Access denied" });
+      }
 
-    // Find user by userId
-    const user = await User.findOne({ userId });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.json({
-      userId: user.userId,
-      name: user.name,
-      email: user.email,
-    });
+      const confessions = await Confession.find({ userId: req.params.userId });
+      res.json(confessions);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+      res.status(500).json({ message: "Error fetching confessions" });
   }
 });
+
 
 module.exports = router;

@@ -22,23 +22,39 @@ const Login = () => {
     }
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    
     try {
-        const response = await axios.post("http://localhost:5000/api/auth/login", {
-            email,
-            password,
+        const response = await fetch("http://localhost:5000/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+            credentials: "include", // Ensure session cookies are sent
         });
 
-        console.log("Login successful:", response.data);
+        const data = await response.json();
+        console.log("Login API Response:", data); // Debugging: Check if userId is received
 
-        // ✅ Store userId in localStorage
-        localStorage.setItem("userId", response.data.userId);
-
-        navigate("/home");
+        if (response.ok && data.userId) {
+            localStorage.setItem("userId", data.userId);  // Store userId
+            console.log("User ID stored in localStorage:", localStorage.getItem("userId")); // Debugging
+            navigate("/home");
+        } else {
+            alert(data.message || "Login failed");
+        }
     } catch (error) {
-        console.error("Login failed:", error);
+        console.error("Login error:", error);
     }
 };
+
+
+  
+  
+  
+  
+  
+  
 
   
   return (

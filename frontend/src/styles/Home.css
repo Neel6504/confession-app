@@ -48,7 +48,7 @@ body {
   margin-bottom: 20px;
   position: relative;
   width: 60%;
-  border-left: 6px solid #1a97eb;
+  border-left: 6px solid #000000;
   transition: all 0.3s ease;
 }
 

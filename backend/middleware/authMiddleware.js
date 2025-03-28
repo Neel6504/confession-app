@@ -1,20 +1,19 @@
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-
-dotenv.config();
+const jwt = require("jsonwebtoken");
 
 const authMiddleware = (req, res, next) => {
-  const token = req.header("Authorization");
+    const token = req.cookies.token; // Get token from HTTP-only cookie
 
-  if (!token) return res.status(401).json({ error: "Unauthorized" });
+    if (!token) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    res.status(400).json({ error: "Invalid token" });
-  }
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify token
+        req.userId = decoded.userId; // Attach userId to request
+        next();
+    } catch (error) {
+        return res.status(403).json({ message: "Invalid token" });
+    }
 };
 
-export default authMiddleware;
+module.exports = authMiddleware;
